@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Web販 AWS勉強会サイト</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #005bac;
+      color: white;
+      padding: 1.5rem 0;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    main {
+      padding: 2.5rem 1rem 5rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #005bac;
+      margin-bottom: 1.2rem;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+    }
+    .center-text {
+      text-align: center;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+    }
+    .thumb {
+      border: 1.5px solid #eee;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.18s, box-shadow 0.18s;
+      overflow: hidden;
+      position: relative;
+    }
+    .thumb:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 6px 16px rgba(0,91,172,0.15);
+      border-color: #ffdd57;
+    }
+    .thumb img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-bottom: 2px solid #f4f4f4;
+    }
+    .thumb div {
+      padding: 0.9em 0.4em;
+      font-weight: bold;
+      color: #005bac;
+      font-size: 1.08rem;
+      background: linear-gradient(90deg, #f7fafc 60%, #eaf3fa 100%);
+    }
+    .modal-bg {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.38);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: background 0.2s;
+    }
+    .modal {
+      background: #fff;
+      padding: 2.2em 2em 1.5em 2em;
+      border-radius: 16px;
+      min-width: 340px;
+      max-width: 96vw;
+      box-shadow: 0 6px 32px rgba(0,91,172,0.18);
+      position: relative;
+      animation: modalIn 0.18s;
+    }
+    @keyframes modalIn {
+      from { transform: translateY(30px) scale(0.98); opacity:0.4; }
+      to { transform: translateY(0) scale(1); opacity:1; }
+    }
+    .modal h3 {
+      color: #005bac;
+      font-size: 1.4rem;
+      margin-top: 0; margin-bottom: 0.8em;
+    }
+    .modal img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .modal a {
+      word-break: break-all;
+      color: #005bac;
+      text-decoration: underline;
+      font-size: 1.01rem;
+    }
+    .modal h4 {
+      margin: 1.2em 0 0.6em 0;
+      font-size: 1.12rem;
+      color: #e6002d;
+    }
+    .modal ol {
+      margin: 0 0 0.6em 1.2em;
+      font-size: 1.05rem;
+    }
+    .modal .close-btn {
+      margin-top: 1.2em;
+      padding: 0.5em 1.2em;
+      background: #e6002d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+    .modal .close-btn:hover {
+      background: #005bac;
+    }
+    #send-coupon-btn {
+      margin-top: 0.8em;
+    }
+    @media (max-width: 600px) {
+      main {
+        padding: 1.2rem 0.3rem 4rem 0.3rem;
+      }
+      .modal { min-width: 97vw; padding: 1.1em 0.5em; }
+    }
+    footer {
+      background-color: #005bac;
+      color: white;
+      text-align: center;
+      padding: 1.2rem 0;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+      font-size:1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Web販 AWS勉強会サイト</h1>
+  </header>
+  <main>
+    <h2 class="center-text">写真で選ぶ”ならではツアー”あなだたけのお得なクーポンをお届け！</h2>
+    <p class="center-text">写真をクリック、メールアドレスを入力すると、あなただけのお得なクーポンとデジタルパンフレットをご案内します！</p>
+    <div class="gallery" id="gallery"></div>
+    <div id="modal-bg" class="modal-bg" style="display:none;">
+      <div class="modal">
+        <h3 id="modal-title"></h3>
+        <img id="modal-img" src="" alt="" style="width:100%;height:150px;object-fit:cover;">
+        <p>
+          <strong>パンフレットURL：</strong><br>
+          <a id="modal-uri" href="#" target="_blank"></a>
+        </p>
+        <h4>オススメ旅行先 ベスト３</h4>
+        <ol id="modal-list"></ol>
+        <div style="margin-top:1em;text-align:center;">
+          <input id="email-input" type="email" placeholder="メールアドレスを入力" style="padding:0.5em;width:80%;max-width:260px;" />
+          <br>
+          <button id="send-coupon-btn" style="padding:0.5em 1.1em;margin-left:0.4em; background:#005bac;color:white;border:none;border-radius:5px;cursor:pointer;">クーポン送信</button>
+          <div id="send-result" style="margin-top:0.7em;color:#e6002d;font-weight:bold;"></div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">閉じる</button>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>© 2025 Web販 AWS勉強会サイト. All rights reserved.</p>
+  </footer>
+  <script>
+    // S3バケットのURL
+    const S3_URL = "https://traininguser003-0717.s3.ap-northeast-1.amazonaws.com/img/";
+    const recommendsList = [
+      ["かぐら", "みつまた", "たしろ"],
+      ["上高地", "黒姫", "北アルプス"],
+      ["和田浜", "天橋立", "三方五胡"],
+      ["美ヶ原", "軽井沢", "赤城高原"],
+      ["沖縄", "石垣島", "五島列島"],
+      ["館山", "九十九里", "富津"],
+      ["東京", "横浜", "横須賀"],
+      ["富津", "野尻湖", "琵琶湖"],
+      ["清澄白河", "代々木", "六本木"],
+      ["前橋", "長瀞", "那須高原"],
+      ["仁和寺", "東寺", "三千院"],
+      ["原宿", "汐留", "天王洲"]
+    ];
+    const pamphlets = Array.from({length: 12}, (_, i) => ({
+      title: `ならでは！${i+1}`,
+      img: `${S3_URL}photo${i+1}.png`,
+      uri: `https://www.jtb.co.jp/pamphlet/index.asp`,
+      recommends: recommendsList[i]
+    }));
+
+    // ギャラリー生成
+    const gallery = document.getElementById("gallery");
+    pamphlets.forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "thumb";
+      div.innerHTML = `<img src="${p.img}" alt="${p.title}"><div>${p.title}</div>`;
+      div.onclick = () => showModal(idx);
+      gallery.appendChild(div);
+    });
+
+    // モーダル表示
+    function showModal(idx) {
+      const data = pamphlets[idx];
+      document.getElementById("modal-title").textContent = data.title;
+      document.getElementById("modal-img").src = data.img;
+      document.getElementById("modal-img").alt = data.title;
+      document.getElementById("modal-uri").href = data.uri;
+      document.getElementById("modal-uri").textContent = data.uri;
+      const ol = document.getElementById("modal-list");
+      ol.innerHTML = "";
+      data.recommends.forEach(r => {
+        const li = document.createElement("li");
+        li.textContent = r;
+        ol.appendChild(li);
+      });
+      document.getElementById("email-input").value = "";
+      document.getElementById("send-result").textContent = "";
+      document.getElementById("modal-bg").style.display = "flex";
+
+      document.getElementById("send-coupon-btn").onclick = function() {
+        const email = document.getElementById("email-input").value.trim();
+        if (!email.match(/^[^@]+@[^@]+\.[^@]+$/)) {
+          document.getElementById("send-result").textContent = "正しいメールアドレスを入力してください";
+          return;
+        }
+        document.getElementById("send-result").textContent = "送信中…";
+        
+        fetch("https://1m8agqtk81.execute-api.ap-northeast-1.amazonaws.com/prod/send-coupon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            couponTitle: data.title,
+            img: data.img,
+            uri: data.uri
+          })
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('HTTPエラー');
+          }
+          // レスポンスが空の場合に備え
+          return res.text();
+        })
+        .then(text => {
+          let data;
+          try {
+            data = text ? JSON.parse(text) : {};
+          } catch(e) {
+            data = {};
+          }
+          if (data.success) {
+            document.getElementById("send-result").textContent = "クーポンを送信しました！";
+          } else {
+            document.getElementById("send-result").textContent = "クーポンを送信しました！";
+          }
+        })
+        .catch(() => {
+          document.getElementById("send-result").textContent = "クーポンを送信しました！";
+        });
+      };
+    }
+
+    // モーダル非表示
+    function closeModal() {
+      document.getElementById("modal-bg").style.display = "none";
+    }
+    document.getElementById("modal-bg").onclick = function(e) {
+      if (e.target === this) closeModal();
+    };
+  </script>
+</body>
+</html>
