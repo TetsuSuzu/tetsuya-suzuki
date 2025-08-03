@@ -163,4 +163,6 @@ def main(req: func.HttpRequest) -&gt; func.HttpResponse:
 <li>サンプルコード、アーキテクチャ図付き</li>
 </ul>
 <hr>
-<p>必要に応じて、<strong>実際のリポジトリ構成やデプロイ設定例、追加機能</strong>もご案内可能です。<br>さらに詳しい実装や個別ファイルの雛形が必要ならご要望ください！</p>
+<p><img width="1920" height="1080" alt="スクリーンショット 2025-08-03 10 42 04" src="https://github.com/user-attachments/assets/c6a08d74-3092-44cd-af1f-1447eb948a59" />　　<img width="1920" height="1080" alt="スクリーンショット 2025-08-03 10 40 39" src="https://github.com/user-attachments/assets/7e5cc486-2a5c-4d4a-889c-72781f837d92" />
+
+</p>
